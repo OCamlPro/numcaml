@@ -1,4 +1,4 @@
-open OUnit
+open Tests
 open Numcaml
 
 let test_add () =

@@ -1,4 +1,4 @@
-open OUnit
+open Tests
 
 let suite = [
 ]

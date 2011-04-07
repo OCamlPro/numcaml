@@ -3,19 +3,16 @@
 all: lib syntax
 	@
 
-lib: lib/*/*.ml
-	ocamlbuild -use-ocamlfind lib/numcaml.cmx
+lib:
+	$(MAKE) -C lib
 
-syntax: syntax/*.ml
-	ocamlbuild -use-ocamlfind syntax/pa_numcaml.cmo
+syntax:
+	$(MAKE) -C syntax
+
+tests:
+	$(MAKE) -C tests
 
 clean:
-	ocamlbuild -clean
-
-tests: tests/*.ml lib syntax
-	rm -f _build/tests/*
-	ocamlbuild -use-ocamlfind tests/suite.native -- -verbose
-
-tests/%_exp.ml: syntax
-	camlp4o -printer o $(shell ocamlfind query camlp4 -i-format) \
-		_build/syntax/pa_numcaml.cmo tests/$*.ml
+	$(MAKE) -C lib clean
+	$(MAKE) -C syntax clean
+	$(MAKE) -C tests clean

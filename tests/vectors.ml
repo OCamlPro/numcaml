@@ -1,4 +1,4 @@
-open OUnit
+open Tests
 open Numcaml
 
 let one = Math.ones [10]
