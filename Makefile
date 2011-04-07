@@ -12,7 +12,8 @@ syntax: syntax/*.ml
 clean:
 	ocamlbuild -clean
 
-tests: tests/*.ml syntax/*.ml lib/*/*.ml
+tests: tests/*.ml lib syntax
+	rm -f _build/tests/*
 	ocamlbuild -use-ocamlfind tests/suite.native -- -verbose
 
 tests/%_exp.ml: syntax

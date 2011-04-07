@@ -3,6 +3,8 @@ open OUnit
 let suites = [
   Ints.suite;
   Floats.suite;
+  Vectors.suite;
+  Matrix.suite;
 ]
 
 let _ =

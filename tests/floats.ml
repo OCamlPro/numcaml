@@ -12,6 +12,6 @@ let test_mul () =
   "value match" @? (x=y)
 
 let suite = [
-  "int_add" >:: test_add;
-  "int_mul" >:: test_mul;
+  "float_add" >:: test_add;
+  "float_mul" >:: test_mul;
 ]

@@ -16,7 +16,7 @@
 
 type 'a t = 'a array array
 
-let create = Array.create_matrix
+let make = Array.make_matrix
 
 let check_size x y =
   Vector.check_size x y;

@@ -14,14 +14,28 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *)
 
+let sf = Printf.sprintf
+
 type t =
   | Int
   | Int32
   | Int64
   | Float
   | Complex
-  | Vector of t
-  | Matrix of t
+  | Vector of vector
+  | Matrix of matrix
+
+(* XXX: we can optimize representation of 'a vector ... vector *)
+and vector = {
+  v_t : t;
+  v_n : int; (* XXX: in this case, this should be v_shape: int list *)
+}
+
+and matrix = {
+  m_t : t;
+  m_n : int;
+  m_m : int;
+}
 
 let rec to_string = function
   | Int      -> "int"
@@ -29,40 +43,50 @@ let rec to_string = function
   | Int64    -> "int64"
   | Float    -> "float"
   | Complex  -> "complex"
-  | Vector t -> to_string t ^ " vector"
-  | Matrix t -> to_string t ^ " matrix"
+  | Vector v -> sf "%s vector[%d]" (to_string v.v_t) v.v_n
+  | Matrix m -> sf "%s matrix[%d,%d]" (to_string m.m_t) m.m_m m.m_n
 
-(* Are value of type t1 can be upcasted to value of type t2 ? *)
-let rec upcastable t1 t2 =
-  match (t1, t2) with
+(* Find the smallest type consistent with t1 and t2 *)
+let rec top t1 t2 =
+  if t1=t2 then t1 else
+    match (t1, t2) with
     (* Vector/Matrix *)
-    | Vector x, Vector y
+    | Vector x, Vector y -> Vector { v_t = top x.v_t y.v_t; v_n = 0 }
     | Vector x, Matrix y
-    | Matrix x, Matrix y -> upcastable x y
-    | Vector _, _ 
-    | Matrix _, _        -> false
-
-    (* Int *)
-    | Int, _ -> true
-
-    (* Int32 *)
-    | Int32, Int -> false
-    | Int32, _   -> true
-
-    (* Int64 *)
-    | Int64, Int
-    | Int64, Int32 -> false
-    | Int64, _     -> true
-
-    (* Float *)
-    | Float, Int
-    | Float, Int32
-    | Float, Int64 -> false
-    | Float, _     -> true
+    | Matrix y, Vector x -> Matrix { m_t = top x.v_t y.m_t; m_n = 0; m_m = 0 }
+    | Matrix x, Matrix y -> Matrix { m_t = top x.m_t y.m_t; m_n = 0; m_m = 0 }
+    | Vector x, t
+    | t       , Vector x -> Vector { x with v_t = top t x.v_t }
+    | Matrix x, t
+    | t       , Matrix x -> Matrix { x with m_t = top t x.m_t }
 
     (* Complex *)
     | Complex, Int
     | Complex, Int32
     | Complex, Int64
-    | Complex, Float -> false
-    | Complex, _     -> true
+    | Complex, Float
+    | Int    , Complex
+    | Int32  , Complex
+    | Int64  , Complex
+    | Float  , Complex -> Complex
+
+    (* Float *)
+    | Float, Int
+    | Float, Int32
+    | Float, Int64
+    | Int  , Float
+    | Int32, Float
+    | Int64, Float -> Float
+
+    (* Int64 *)
+    | Int64, Int
+    | Int64, Int32
+    | Int  , Int64
+    | Int32, Int64 -> Int64
+
+    (* Int32 *)
+    | Int32, Int
+    | Int  , Int32 -> Int32
+
+    | _ -> assert false
+  

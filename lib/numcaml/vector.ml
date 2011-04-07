@@ -16,7 +16,7 @@
 
 type 'a t = 'a array
 
-let create = Array.create
+let make = Array.make
 
 let check_size x y =
   if Array.length x <> Array.length y then

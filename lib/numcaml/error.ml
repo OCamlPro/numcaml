@@ -31,7 +31,7 @@ let fail = function
         s (Type.to_string t) (Type.to_string u) in
       failwith msg
   | Uncastable (t1,t2)  ->
-      failwith (sf "'%s' cannot be upcast to '%s'" (Type.to_string t1) (Type.to_string t2))
+      failwith (sf "'%s' cannot be upcasted to '%s'" (Type.to_string t1) (Type.to_string t2))
 
 let no_attribute t a = fail (No_attribute (t, a))
 let not_aligned () = fail Not_aligned
