@@ -41,6 +41,11 @@ module Make (Syntax : Sig.Camlp4Syntax) =
 	  | <:expr< $e1$ + $e2$ >> -> <:expr< Math.add $e1$ $e2$ >>
 	  | <:expr< $e1$ * $e2$ >> -> <:expr< Math.mul $e1$ $e2$ >>
 
+          | <:expr< ( $e1$ : int ) >>   -> <:expr< Math.Int $e1$ >>
+          | <:expr< ( $e1$ : int32 ) >> -> <:expr< Math.Int32 $e1$ >>
+          | <:expr< ( $e1$ : int64 ) >> -> <:expr< Math.Int64 $e1$ >>
+          | <:expr< ( $e1$ : float ) >> -> <:expr< Math.Float $e1$ >>
+
 	  | e                      -> e
     end
   
