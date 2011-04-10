@@ -46,6 +46,11 @@ module Make (Syntax : Sig.Camlp4Syntax) =
           | <:expr< ( $e1$ : int64 ) >> -> <:expr< Math.Int64 $e1$ >>
           | <:expr< ( $e1$ : float ) >> -> <:expr< Math.Float $e1$ >>
 
+          | <:expr< ( $e1$ : vector $lid:t$) >> ->
+              let constr = String.capitalize t in
+              <:expr< Math.Vector (Array.map (fun e -> Math.$uid:constr$ e) $e1$) >>
+          | <:expr< ( $e1$ : matrix $lid:t$) >> -> <:expr< Math.Matrix $e1$ >>
+
 	  | e                      -> e
     end
   

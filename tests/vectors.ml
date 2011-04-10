@@ -13,6 +13,12 @@ let test_mul () =
   let y = Math.Vector (Array.create 10 (Math.Int32 7l)) in
   "value match" @? (x=y)
 
+let test_aq () =
+  let x = Array.init 10 (fun i -> i) in
+  let y = $( 10.5 + (x : int vector)) in
+  let z = Array.init 10 (fun i -> float i +. 10.5) in
+  "value match" @? (y = $( (z : float vector) ) )
+
 let suite = [
   "vector_add" >:: test_add;
   "vector_mul" >:: test_mul;
