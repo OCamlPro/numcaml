@@ -146,4 +146,9 @@ let rec ones = function
   | []   -> Vector [| Int 1 |]
   | [i]  -> Vector (Array.init i (fun _ -> Int 1))
   | i::t -> Vector (Array.init i (fun _ -> ones t))
-  
+
+let id n =
+  let m = Matrix.make n n 0 in
+  for i = 0 to n-1 do
+    m.(i).(i) <- 1
+  done

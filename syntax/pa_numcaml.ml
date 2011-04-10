@@ -30,16 +30,17 @@ module Make (Syntax : Sig.Camlp4Syntax) =
     let map = object
       inherit Ast.map as super
       method expr e =
-	let _loc = Ast.loc_of_expr e in
-	match super#expr e with
+        let _loc = Ast.loc_of_expr e in
+        match super#expr e with
 
-	  | <:expr< $int:i$ >>   -> <:expr< Math.Int $int:i$ >>
-	  | <:expr< $int32:i$ >> -> <:expr< Math.Int32 $int32:i$ >>
-	  | <:expr< $int64:i$ >> -> <:expr< Math.Int64 $int64:i$ >>
-	  | <:expr< $flo:i$ >>   -> <:expr< Math.Float $flo:i$ >>
+          | <:expr< $int:i$ >>   -> <:expr< Math.Int $int:i$ >>
+          | <:expr< $int32:i$ >> -> <:expr< Math.Int32 $int32:i$ >>
+          | <:expr< $int64:i$ >> -> <:expr< Math.Int64 $int64:i$ >>
+          | <:expr< $flo:i$ >>   -> <:expr< Math.Float $flo:i$ >>
+          | <:expr< [| $e$ |] >> -> <:expr< Math.Vector [| $e$ |] >>
 
-	  | <:expr< $e1$ + $e2$ >> -> <:expr< Math.add $e1$ $e2$ >>
-	  | <:expr< $e1$ * $e2$ >> -> <:expr< Math.mul $e1$ $e2$ >>
+          | <:expr< $e1$ + $e2$ >> -> <:expr< Math.add $e1$ $e2$ >>
+          | <:expr< $e1$ * $e2$ >> -> <:expr< Math.mul $e1$ $e2$ >>
 
           | <:expr< ( $e1$ : int ) >>   -> <:expr< Math.Int $e1$ >>
           | <:expr< ( $e1$ : int32 ) >> -> <:expr< Math.Int32 $e1$ >>
@@ -51,13 +52,17 @@ module Make (Syntax : Sig.Camlp4Syntax) =
               <:expr< Math.Vector (Array.map (fun e -> Math.$uid:constr$ e) $e1$) >>
           | <:expr< ( $e1$ : matrix $lid:t$) >> -> <:expr< Math.Matrix $e1$ >>
 
-	  | e                      -> e
+          | e                      -> e
     end
   
     EXTEND Gram
       expr: LEVEL "top"
       [ 
-	[ "$"; "("; e = expr; ")" -> map#expr e ]
+        [ "$"; "("; e = expr; ")" -> map#expr e ]
+      ];
+      expr: LEVEL "simple"
+      [
+        [ "{|"; el = sem_expr; "|}" -> <:expr< Math.Matrix [| $el$ |] >> ]
       ];
     END 
   end 
