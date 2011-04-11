@@ -9,7 +9,7 @@ lib:
 syntax:
 	$(MAKE) -C syntax
 
-tests:
+tests: all
 	$(MAKE) -C tests
 
 clean:

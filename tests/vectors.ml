@@ -14,7 +14,7 @@ let test_mul () =
   "value match" @? (x=y)
 
 let test_q () =
-  let x = $( [| 1; 2l; 3; 4 |] ) in
+  let x = $(Math.vector [| 1; 2l; 3; 4 |] ) in
   let y = $( x + 0l ) in
   let z = Math.Vector (Array.init 4 (fun i -> Math.Int32 (Int32.of_int (i+1)))) in
   "value match" @? (y = z)
