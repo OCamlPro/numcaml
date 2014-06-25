@@ -156,4 +156,32 @@ let id n =
 
 let vector v = Vector v
 let matrix m = Matrix m
-  
+ 
+let mathjax x =
+  let rec mathjax = function
+    | Int x -> string_of_int x
+    | Int32 x -> Int32.to_string x ^ "_{l}"
+    | Int64 x -> Int64.to_string x ^ "_{L}"
+    | Float x -> string_of_float x
+    | Complex x -> string_of_float x.Complex.re ^ "+" ^ string_of_float x.Complex.im ^ "i"
+    | Vector x ->
+      let x = Array.map (fun x -> mathjax x ^ "\\\\") x in
+      String.concat "\n" ("\\begin{pmatrix}" :: Array.to_list x @ ["\\end{pmatrix}"])
+
+    | Matrix x -> 
+      let x = 
+        Array.map 
+          (fun x ->
+            let x = Array.to_list x in
+            let rec f = function
+              | [] -> " \\\\"
+              | [x] -> mathjax x ^ " \\\\"
+              | x::y -> mathjax x ^ " & " ^ f y
+            in
+            f x
+          ) x 
+      in
+      String.concat "\n" ("\\begin{bmatrix}" :: Array.to_list x @ ["\\end{bmatrix}"])
+  in
+  String.concat "" [ "$$"; mathjax x; "$$" ]
+

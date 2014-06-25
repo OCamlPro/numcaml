@@ -1,0 +1,12 @@
+version = "0.1.0"
+description = "Scientific Computing Tools For OCaml"
+archive(byte) = "numcaml.cmo"
+archive(native) = "numcaml.cmx"
+
+
+package "syntax" (
+  version = "0.1.0"
+  requires = "numcaml,camlp4"
+  archive(syntax,preprocessor) = "pa_numcaml.cmo"
+  archive(syntax,toploop) = "pa_numcaml.cmo"
+)
