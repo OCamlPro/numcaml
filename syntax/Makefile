@@ -2,7 +2,7 @@ P4_INC = $(shell ocamlc -where)/camlp4
 PP = camlp4o -I $(P4_INC) \
 	-parser Camlp4GrammarParser \
 	-parser Camlp4QuotationCommon \
-	-parser Camlp4OcamlRevisedQuotationExpander
+	-parser Camlp4OCamlRevisedQuotationExpander
 
 .PHONY: all clean
 all:
